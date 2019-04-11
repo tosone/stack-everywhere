@@ -19,7 +19,7 @@ function bsTOC(str, options) {
   var lastLevel = 0;
   var i = 0;
 
-  headings.each(function() {
+  headings.each(function () {
     var level = +this.name[1];
     var id = $(this).attr('id');
     var text = $(this).text();
@@ -36,7 +36,7 @@ function bsTOC(str, options) {
       }
 
       if (level > lastLevel) {
-        result += '<ul class="' + className + ' '+ className + '-child">';
+        result += '<ul class="' + className + ' ' + className + '-child">';
       } else {
         result += '</li>';
       }
@@ -71,6 +71,6 @@ function bsTOC(str, options) {
 /**
  * boostrap scrollspy compatible toc
  */
-hexo.extend.helper.register('bstoc', function(str, opts){
+hexo.extend.helper.register('bstoc', function (str, opts) {
   return bsTOC(str, opts);
 });

@@ -8,19 +8,19 @@ var lunr = require('lunr');
 
 var localizedPath = ['docs', 'api'];
 
-function startsWith(str, start){
+function startsWith(str, start) {
   return str.substring(0, start.length) === start;
 }
 
-hexo.extend.helper.register('page_nav', function(){
+hexo.extend.helper.register('page_nav', function () {
   var type = this.page.canonical_path.split('/')[0];
   var sidebar = this.site.data.sidebar[type];
-  var path = this.path.substr(this.path.indexOf(type+'/') + (type+'/').length);
+  var path = this.path.substr(this.path.indexOf(type + '/') + (type + '/').length);
   var list = {};
   var prefix = 'sidebar.' + type + '.';
 
-  for (var i in sidebar){
-    for (var j in sidebar[i]){
+  for (var i in sidebar) {
+    for (var j in sidebar[i]) {
       list[sidebar[i][j]] = j;
     }
   }
@@ -29,14 +29,14 @@ hexo.extend.helper.register('page_nav', function(){
   var index = keys.indexOf(path);
   var result = '';
 
-  if (index > 0){
-    path = this.url_for_lang(type + '/' + keys[index-1]); 
+  if (index > 0) {
+    path = this.url_for_lang(type + '/' + keys[index - 1]);
     result += '<a href="' + path + '" class="article-footer-prev" title="' + this.__(prefix + list[keys[index - 1]]) + '">' +
       '<i class="fa fa-chevron-left"></i><span>' + this.__('page.prev') + '</span></a>';
   }
 
-  if (index < keys.length - 1){
-    path = this.url_for_lang(type + '/' + keys[index+1]); 
+  if (index < keys.length - 1) {
+    path = this.url_for_lang(type + '/' + keys[index + 1]);
     result += '<a href="' + path + '" class="article-footer-next" title="' + this.__(prefix + list[keys[index + 1]]) + '">' +
       '<span>' + this.__('page.next') + '</span><i class="fa fa-chevron-right"></i></a>';
   }
@@ -44,22 +44,25 @@ hexo.extend.helper.register('page_nav', function(){
   return result;
 });
 
-hexo.extend.helper.register('doc_sidebar', function(className){
+hexo.extend.helper.register('doc_sidebar', function (className) {
   var type = this.page.canonical_path.split('/')[0];
+  console.log(type);
+  if (type === "index.html") {
+    type = "mac"
+  }
   var sidebar = this.site.data.sidebar[type];
   var path = pathFn.basename(this.path);
   var result = '';
   var self = this;
   var prefix = 'sidebar.' + type + '.';
-  var lang = this.page.lang;
-  var isDefaultLang = lang === 'zh-cn';
-  var docRoot = this.url_for( isDefaultLang ? 'docs/' : lang + '/docs/' );
+  var docRoot = "/" + type + "/";
 
-  _.each(sidebar, function(menu, title){
+  _.each(sidebar, function (menu, title) {
     result += '<strong class="' + className + '-title">' + self.__(prefix + title) + '</strong>';
 
-    _.each(menu, function(link, text){
+    _.each(menu, function (link, text) {
       var itemClass = className + '-link';
+      console.log(docRoot, link)
       link = docRoot + link;
       if (link.indexOf(path) > -1) itemClass += ' current';
 
@@ -70,14 +73,14 @@ hexo.extend.helper.register('doc_sidebar', function(className){
   return result;
 });
 
-hexo.extend.helper.register('header_menu', function(className){
+hexo.extend.helper.register('header_menu', function (className) {
   var menu = this.site.data.menu;
   var result = '';
   var self = this;
   var lang = this.page.lang;
   var isDefaultLang = lang === 'zh-cn';
 
-  _.each(menu, function(path, title){
+  _.each(menu, function (path, title) {
     if (!isDefaultLang && ~localizedPath.indexOf(title)) path = lang + '/' + path;
 
     result += '<li class="' + className + '-item">';
@@ -88,14 +91,14 @@ hexo.extend.helper.register('header_menu', function(className){
   return result;
 });
 
-hexo.extend.helper.register('canonical_url', function(lang){
+hexo.extend.helper.register('canonical_url', function (lang) {
   var path = this.page.canonical_path;
   if (lang && lang !== 'zh-cn') path = lang + '/' + path;
 
   return this.config.url + '/' + path;
 });
 
-hexo.extend.helper.register('url_for_lang', function(path){
+hexo.extend.helper.register('url_for_lang', function (path) {
   var lang = this.page.lang;
   var isDefaultLang = lang === 'zh-cn';
   var url = path;
@@ -107,17 +110,17 @@ hexo.extend.helper.register('url_for_lang', function(path){
   return url;
 });
 
-hexo.extend.helper.register('raw_link', function(path){
+hexo.extend.helper.register('raw_link', function (path) {
   return 'https://github.com/o2team/mac/edit/master/source/' + path;
 });
 
-hexo.extend.helper.register('page_anchor', function(str){
-  var $ = cheerio.load(str, {decodeEntities: false});
+hexo.extend.helper.register('page_anchor', function (str) {
+  var $ = cheerio.load(str, { decodeEntities: false });
   var headings = $('h1, h2, h3, h4, h5, h6');
 
   if (!headings.length) return str;
 
-  headings.each(function(){
+  headings.each(function () {
     var id = $(this).attr('id');
 
     $(this)
@@ -128,37 +131,36 @@ hexo.extend.helper.register('page_anchor', function(str){
   return $.html();
 });
 
-hexo.extend.helper.register('lunr_index', function(data){
-  var index = lunr(function(){
-    this.field('name', {boost: 10});
-    this.field('tags', {boost: 50});
+hexo.extend.helper.register('lunr_index', function (data) {
+  var index = lunr(function () {
+    this.field('name', { boost: 10 });
+    this.field('tags', { boost: 50 });
     this.field('description');
     this.ref('id');
-  });
-
-  _.sortBy(data, 'name').forEach(function(item, i){
-    index.add(_.assign({id: i}, item));
+    _.sortBy(data, 'name').forEach((item, i) => {
+      this.add(_.assign({ id: i }, item));
+    });
   });
 
   return JSON.stringify(index.toJSON());
 });
 
-hexo.extend.helper.register('canonical_path_for_nav', function(){
+hexo.extend.helper.register('canonical_path_for_nav', function () {
   var path = this.page.canonical_path;
 
-  if (startsWith(path, 'docs/') || startsWith(path, 'api/')){
+  if (startsWith(path, 'docs/') || startsWith(path, 'api/')) {
     return path;
   } else {
     return '';
   }
 });
 
-hexo.extend.helper.register('lang_name', function(lang){
+hexo.extend.helper.register('lang_name', function (lang) {
   var data = this.site.data.languages[lang];
   return data.name || data;
 });
 
-hexo.extend.helper.register('disqus_lang', function(){
+hexo.extend.helper.register('disqus_lang', function () {
   var lang = this.page.lang;
   var data = this.site.data.languages[lang];
 

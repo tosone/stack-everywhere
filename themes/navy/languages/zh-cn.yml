@@ -18,7 +18,7 @@ page:
   last_updated: 上次更新：%s
 
 sidebar:
-  docs:
+  mac:
     getting_started: 开始使用
     overview: 概述
     common: 通用
@@ -30,7 +30,7 @@ sidebar:
     fd_rd: 全栈开发 
     dev_common: 通用开发
     homebrew: Homebrew
-    shell_terminal: Shell和终端
+    shell_terminal: Shell 和终端
     version_control: 版本控制
     vim: Vim编辑器
     markdown: Markdown手册
@@ -45,10 +45,10 @@ sidebar:
     strongloop: Strongloop
     chrome_plugins: Chrome插件
     python: Python
-    dev_ios: IOS开发
+    dev_ios: IOS 开发
     alcatraz: Alcatraz 
     crash_logs: 崩溃日志 
-    dev_android: Android开发
+    dev_android: Android 开发
     android_studio: Android Studio
     miscellaneous: 其他
     contributing: 贡献
