@@ -5,7 +5,7 @@ docs:
     issues: issues.html
   id_vd:
     interactive: interactive.html
-    visual:	visual.html
+    visual: visual.html
     cooperation: cooperation.html
   dev_common:
     homebrew: dev-common/homebrew.html

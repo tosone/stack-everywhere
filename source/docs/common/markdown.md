@@ -3,7 +3,6 @@ title: Markdown手册
 
 > 本手册参考自 [a Gist](https://gist.github.com/jonschlinkert/5854601)。  
 
-
 # Typography 
 
 ## Headings
@@ -39,9 +38,6 @@ HTML:
 <h6>h6 Heading</h6>
 ```
 
-<br>
-<br>
-<br>
 
 
 ## Horizontal Rules
@@ -60,12 +56,6 @@ ___
 
 ***
 
-
-<br>
-<br>
-<br>
-
-
 ## Body Copy 
 
 Body copy written as normal, plain text will be wrapped with `<p></p>` tags in the rendered HTML.
@@ -80,12 +70,6 @@ renders to this HTML:
 ``` html
 <p>Lorem ipsum dolor sit amet, graecis denique ei vel, at duo primis mandamus. Et legere ocurreret pri, animal tacimates complectitur ad cum. Cu eum inermis inimicus efficiendi. Labore officiis his ex, soluta officiis concludaturque ei qui, vide sensibus vim ad.</p>
 ```
-
-
-<br>
-<br>
-<br>
-
 
 ## Emphasis
 
@@ -137,12 +121,6 @@ Which renders to:
 
 ~~Strike through this text.~~
 
-
-<br>
-<br>
-<br>
-
-
 ## Blockquotes
 For quoting blocks of content from another source within your document.
 
@@ -185,9 +163,6 @@ odio non est accumsan facilisis. Aliquam id turpis in dolor tincidunt mollis ac 
 Nunc augue augue, aliquam non hendrerit ac, commodo vel nisi. 
 
 
-<br>
-<br>
-<br>
 
 
 ## Lists
@@ -321,9 +296,6 @@ Renders to:
 8. Eget porttitor lorem
 
 
-<br>
-<br>
-<br>
 
 
 ## Code
@@ -453,9 +425,6 @@ And this complicated HTML:
 ```
 
 
-<br>
-<br>
-<br>
 
 
 
@@ -521,9 +490,6 @@ Adding a colon on the right side of the dashes below any heading will right alig
 | ext    | extension to be used for dest files. |
 
 
-<br>
-<br>
-<br>
 
 
 ## Links
@@ -586,9 +552,6 @@ Content for chapter one.
 **NOTE** that specific placement of the anchor tag seems to be arbitrary. They are placed inline here since it seems to be unobtrusive, and it works.
 
 
-<br>
-<br>
-<br>
 
 
 ## Images
