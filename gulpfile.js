@@ -28,11 +28,16 @@ var dirs = {
     assetsDir: 'public/assets'
 };
 
-gulp.task('useref', ['hexo'], function () {
+gulp.task('hexo', function (done) {
+    exec('hexo g');
+    done();
+});
 
-    return gulp.src('public/**/*.html')
+gulp.task('useref', gulp.series('hexo', function (done) {
+    gulp.src('public/**/*.html')
         .pipe($.useref({
             searchPath: 'public',
+            allowEmpty: true,
             transformPath: function (filePath) {
                 filePath = path.normalize(filePath);
                 return filePath.replace(dirs.public + cfg.root, dirs.public + '/');
@@ -45,20 +50,21 @@ gulp.task('useref', ['hexo'], function () {
         .pipe($.if('*.js', $.uglify()))
         .pipe($.if('*.html', $.htmlMinifier(htmlMinifierOptions)))
         .pipe(gulp.dest('public'));
-});
+    done();
+}));
 
-gulp.task('rev:media', function () {
-
-    return gulp.src([dirs.fonts + '/**/*', dirs.imgs + '/**/*'], { base: dirs.public })
+gulp.task('rev:media', function (done) {
+    gulp.src([dirs.fonts + '/**/*', dirs.imgs + '/**/*'], { base: dirs.public, allowEmpty: true })
         .pipe($.rev())
         .pipe(gulp.dest(dirs.assetsDir))
         .pipe($.rev.manifest('rev-media.json'))
         .pipe(gulp.dest(dirs.assetsDir));
+    done();
 });
 
-gulp.task('rev:scripts', ['useref', 'rev:media'], function () {
-    var manifest = gulp.src(dirs.assetsDir + '/rev-media.json');
-    return gulp.src([dirs.public + '/css/dist*.css', dirs.public + '/js/dist*.js'], { base: dirs.public })
+gulp.task('rev:scripts', gulp.series('useref', 'rev:media', function (done) {
+    var manifest = gulp.src(dirs.assetsDir + '/rev-media.json', { allowEmpty: true });
+    gulp.src([dirs.public + '/css/dist*.css', dirs.public + '/js/dist*.js'], { base: dirs.public, allowEmpty: true })
         .pipe($.rev())
         .pipe($.revReplace({
             manifest: manifest
@@ -66,22 +72,24 @@ gulp.task('rev:scripts', ['useref', 'rev:media'], function () {
         .pipe(gulp.dest(dirs.assetsDir))
         .pipe($.rev.manifest())
         .pipe(gulp.dest(dirs.assetsDir));
-});
+    done();
+}));
 
-gulp.task('img:min', ['rev:media'], function () {
+gulp.task('img:min', gulp.series('rev:media', function (done) {
     var pngquant = require('imagemin-pngquant');
-    return gulp.src(dirs.assetsDir + '/img/**/*', { base: dirs.assetsDir })
+    gulp.src(dirs.assetsDir + '/img/**/*', { base: dirs.assetsDir })
         .pipe($.imagemin({
             progressive: true,
             svgoPlugins: [{ removeViewBox: false }],
             use: [pngquant()]
         }))
-        .pipe(gulp.dest(dirs.assetsDir))
-});
+        .pipe(gulp.dest(dirs.assetsDir));
+    done();
+}));
 
-gulp.task("rev:replace", ["rev:scripts"], function () {
+gulp.task("rev:replace", gulp.series("rev:scripts", function (done) {
     var manifest = gulp.src([dirs.assetsDir + '/rev-*.json']);
-    return gulp.src([dirs.public + "/**/*.html"])
+    gulp.src([dirs.public + "/**/*.html"])
         .pipe($.revReplace({
             manifest: manifest,
             modifyReved: function (fileName) {
@@ -95,11 +103,8 @@ gulp.task("rev:replace", ["rev:scripts"], function () {
             }
         }))
         .pipe(gulp.dest(dirs.public));
-});
+    done();
+}));
 
-gulp.task('hexo', function () {
-    exec('hexo g');
-});
-
-gulp.task('img', ['img:min']);
-gulp.task('default', ['rev:replace', 'img']);
+gulp.task('img', gulp.series('img:min'));
+gulp.task('default', gulp.series('rev:replace', 'img'));
